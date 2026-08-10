@@ -18,6 +18,8 @@ desktop.ini
 # ─── Node / Vite ───
 archimages/node_modules/
 archimages/dist/
+# Re-include the Vite entry HTML (a global gitignore excludes index.html)
+!archimages/index.html
 
 # ─── Rust / Cargo ───
 archimages/src-tauri/target/
