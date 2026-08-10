@@ -35,3 +35,6 @@ tests/codec-corpus/
 
 # ─── Built app (local testing) ───
 ArchImages.app/
+
+# ─── Downloaded release artifacts (local staging) ───
+release-artifacts/
