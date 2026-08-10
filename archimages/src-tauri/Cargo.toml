@@ -1,6 +1,6 @@
 [package]
 name = "archimages"
-version = "3.0.0-alpha.0"
+version = "3.0.1-beta"
 description = "Photo archiving, organizing, renaming and deduplication tool"
 authors = ["suzhan"]
 edition = "2021"
