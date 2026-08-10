@@ -41,7 +41,10 @@ async function refresh() {
     previewError.value = "";
   } catch (e) {
     preview.value = null;
-    previewError.value = String(e);
+    // Tauri IPC 拒绝时传入 ErrorDto { key, message } 对象；
+    // String(object) 会得到 "[object Object]"，需提取 message 字段。
+    const raw = e as { message?: string; key?: string };
+    previewError.value = raw?.message ?? String(e);
   }
 }
 

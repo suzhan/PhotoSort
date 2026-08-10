@@ -1,0 +1,37 @@
+# ─── OS / IDE ───
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── Legacy ArchImages v2 (Python + PyQt5) ───
+# Kept locally for reference; excluded from v3 repository to avoid
+# shipping the deprecated Python runtime and any embedded secrets.
+/*.py
+/*.exe
+/*.ico
+/*.PNG
+
+# ─── Node / Vite ───
+archimages/node_modules/
+archimages/dist/
+
+# ─── Rust / Cargo ───
+archimages/src-tauri/target/
+archimages/src-tauri/Cargo.lock.bak
+
+# ─── Tauri build output ───
+archimages/src-tauri/gen/
+
+# ─── Logs / local runtime data ───
+*.log
+archimages/src-tauri/.tauri/
+
+# ─── codec-corpus test data (downloaded, not committed) ───
+tests/codec-corpus/
+
+# ─── Built app (local testing) ───
+ArchImages.app/
