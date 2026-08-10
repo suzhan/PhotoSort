@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --border: #d7dae0;
+  --text: #1f2329;
+  --muted: #6b7280;
+  --accent: #3b6fe0;
+  --ok: #1f9d55;
+  --warn: #b8860b;
+  --error: #c0392b;
+}
+
+/* 主题：settings.theme = light/dark 时由根属性强制覆盖；system 走媒体查询 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1e2024;
+    --panel: #26292f;
+    --border: #3a3e46;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #5b86f0;
+    --ok: #3fce7f;
+    --warn: #d8a531;
+    --error: #e06c5b;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1e2024;
+  --panel: #26292f;
+  --border: #3a3e46;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #5b86f0;
+  --ok: #3fce7f;
+  --warn: #d8a531;
+  --error: #e06c5b;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}

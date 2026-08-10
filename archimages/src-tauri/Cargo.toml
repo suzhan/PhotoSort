@@ -1,0 +1,49 @@
+[package]
+name = "archimages"
+version = "3.0.0-alpha.0"
+description = "Photo archiving, organizing, renaming and deduplication tool"
+authors = ["suzhan"]
+edition = "2021"
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "archimages_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+walkdir = "2"
+uuid = { version = "1", features = ["v4"] }
+nom-exif = "3"
+# rawler 不遵循 SemVer（0.x 次版本可能破坏 API），锁定精确版本
+rawler = "=0.7.2"
+wait-timeout = "0.2"
+# 查重：RustCrypto 哈希族，同一 digest trait，单次读取驱动多个 hasher
+sha2 = "0.10"
+sha1 = "0.10"
+md-5 = "0.10"
+# 取消令牌：跨线程/异步统一的取消原语（需求 §十九）
+tokio-util = "0.7"
+# SQLite：bundled 静态编译，最终用户无需安装任何运行时（需求 §二十一）
+rusqlite = { version = "0.32", features = ["bundled"] }
+# HTTP 客户端：Google Maps Reverse Geocoding（需求 §七）。rustls-tls 避免 OpenSSL 依赖。
+# async 给未来扩展；blocking 供 organize 同步流水线内调用。
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "blocking"] }
+# OS 原生凭据存储：Google API Key 不进 settings.json，进 Keychain/Credential Manager（需求 §七/§三十）
+keyring = "3"
+thiserror = "2"
+chrono = { version = "0.4", features = ["serde"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+tracing-appender = "0.2"
+
+[dev-dependencies]
+tempfile = "3"

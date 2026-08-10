@@ -1,0 +1,171 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ─────────────────────────────────────────────────────────────
+  # 质量门禁：fmt / clippy / test / typecheck / build
+  # 在 Ubuntu 上跑，最快反馈，不消耗 macOS/Windows 配额
+  # ─────────────────────────────────────────────────────────────
+  quality:
+    name: Quality (fmt, clippy, test, typecheck)
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: archimages
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies (Linux Tauri deps)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            librsvg2-dev \
+            libssl-dev \
+            patchelf
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: archimages/package-lock.json
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cargo cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: archimages/src-tauri
+
+      - name: cargo fmt --check
+        working-directory: archimages/src-tauri
+        run: cargo fmt --check
+
+      - name: cargo clippy
+        working-directory: archimages/src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: cargo test
+        working-directory: archimages/src-tauri
+        run: cargo test --all
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: Frontend unit tests
+        run: npm run test
+
+      - name: Frontend build
+        run: npm run build
+
+  # ─────────────────────────────────────────────────────────────
+  # 跨平台打包：Windows + macOS
+  # 首阶段 unsigned build（需求 §三十四/§三十五）
+  # ─────────────────────────────────────────────────────────────
+  build-windows:
+    name: Build Windows (x64)
+    needs: quality
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: archimages
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: archimages/package-lock.json
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cargo cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: archimages/src-tauri
+
+      - name: Build Tauri app (Windows NSIS + MSI)
+        run: npm run tauri build -- --target x86_64-pc-windows-msvc
+
+      - name: Upload Windows installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArchImages-windows-x64
+          path: |
+            archimages/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+            archimages/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+          if-no-files-found: warn
+
+  build-macos:
+    name: Build macOS (${{ matrix.target }})
+    needs: quality
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - aarch64-apple-darwin
+          - x86_64-apple-darwin
+    defaults:
+      run:
+        working-directory: archimages
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: archimages/package-lock.json
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cargo cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: archimages/src-tauri
+          key: ${{ matrix.target }}
+
+      - name: Build Tauri app (macOS .app + DMG)
+        run: npm run tauri build -- --target ${{ matrix.target }}
+
+      - name: Upload macOS bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArchImages-macos-${{ matrix.target }}
+          path: |
+            archimages/src-tauri/target/${{ matrix.target }}/release/bundle/dmg/*.dmg
+            archimages/src-tauri/target/${{ matrix.target }}/release/bundle/macos/*.app
+          if-no-files-found: warn
