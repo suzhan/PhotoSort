@@ -229,4 +229,4 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request:
 
 ## License
 
-All rights reserved.
+[MIT License](LICENSE)
