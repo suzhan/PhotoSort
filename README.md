@@ -4,7 +4,13 @@ A cross-platform desktop application for photo archiving, organizing, renaming, 
 
 **Design principle: data safety first, performance second.** Scanning and planning never write to disk. Source files are deleted only after all four guarantees pass: copy complete, target exists, size matches, hash matches. A full transaction journal enables crash recovery.
 
-![ArchImages Screenshot](docs/screenshot-main.png)
+![ArchImages Main UI](docs/screenshot-main.png)
+
+*Main interface — select source/destination, configure templates, preview before organizing.*
+
+![ArchImages Settings](docs/screenshot-settings.png)
+
+*Advanced settings — duplicate detection mode, concurrency, EXIF fallback, GPS reverse geocoding with secure API key storage.*
 
 ## Features
 
