@@ -1,7 +1,7 @@
 export default {
   app: {
-    title: "ArchImages",
-    subtitle: "照片归档 · 整理 · 查重",
+    title: "PhotoSort",
+    subtitle: "A cross-platform photo organizer powered by metadata",
   },
   language: {
     label: "语言",
@@ -55,7 +55,7 @@ export default {
     title: "高级设置",
     duplicateMode: "查重模式",
     duplicateModern: "现代（大小 + SHA-256）",
-    duplicateLegacy: "兼容旧版（大小 + MD5 + SHA-1）",
+    duplicateLegacy: "严格模式（大小 + MD5 + SHA-1）",
     theme: "主题",
     themeSystem: "跟随系统",
     themeLight: "浅色",

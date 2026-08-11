@@ -1,14 +1,14 @@
-# ArchImages v3
+# PhotoSort
 
-A cross-platform desktop application for photo archiving, organizing, renaming, and deduplication. Built with Rust + Tauri 2 + Vue 3, replacing the legacy Python 3.6 + PyQt5 ArchImages v2.
+A cross-platform photo organizer powered by metadata.
 
 **Design principle: data safety first, performance second.** Scanning and planning never write to disk. Source files are deleted only after all four guarantees pass: copy complete, target exists, size matches, hash matches. A full transaction journal enables crash recovery.
 
-![ArchImages Main UI](docs/screenshot-main.png)
+![PhotoSort Main UI](docs/screenshot-main.png)
 
 *Main interface — select source/destination, configure templates, preview before organizing.*
 
-![ArchImages Settings](docs/screenshot-settings.png)
+![PhotoSort Settings](docs/screenshot-settings.png)
 
 *Advanced settings — duplicate detection mode, concurrency, EXIF fallback, GPS reverse geocoding with secure API key storage.*
 
@@ -18,7 +18,7 @@ A cross-platform desktop application for photo archiving, organizing, renaming, 
 - **EXIF metadata** via a dual-engine pipeline: `nom-exif` for standard images (JPEG/HEIC/HEIF/AVIF/TIFF/CR3/RAF/IIQ), `rawler` for camera RAW (NEF/CR2/ARW/DNG...), with an optional ExifTool runtime fallback
 - **Template engine** for directory and filename rules (`{yyyy}/{camera_model}/{gps_city}`, `{yyyyMMdd}_{HHmmss}_{seq:4}`, etc.) with a concurrency-safe sequence coordinator
 - **Read-only preview** before any file is touched — plan and execute share the exact same pipeline
-- **Duplicate detection** in two modes: Modern (SHA-256) and LegacyStrict (MD5 + SHA1, single-pass streaming)
+- **Duplicate detection** using SHA-256 content hashing
 - **Safe file operations**: atomic copy (temp + fsync + rename), safe move (rename with cross-device fallback), copy-verify-delete with four-way verification before source removal
 - **Background jobs** with bounded worker pools, progress events, and cooperative cancellation
 - **SQLite persistence** for hash cache, GPS cache, and job journaling with crash recovery
@@ -28,7 +28,7 @@ A cross-platform desktop application for photo archiving, organizing, renaming, 
 
 ## Template System
 
-ArchImages uses a flexible template engine to define how photos are organized into directories and renamed. Templates use `{variable}` syntax, parsed by a dedicated tokenizer (not simple string replacement) to avoid ambiguity.
+PhotoSort uses a flexible template engine to define how photos are organized into directories and renamed. Templates use `{variable}` syntax, parsed by a dedicated tokenizer (not simple string replacement) to avoid ambiguity.
 
 ### Available Variables
 

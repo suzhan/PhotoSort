@@ -1,4 +1,4 @@
-//! ArchImages v3：照片归档、整理、重命名与查重工具。
+//! PhotoSort：A cross-platform photo organizer powered by metadata.
 //!
 //! 分层约定：commands（IPC 薄层）→ core（业务核心）→ db / models / utils。
 //! 数据安全优先于性能，任何文件变更必须可校验、可审计、可恢复。
@@ -39,7 +39,7 @@ pub fn run() {
             let app_state = state::AppState::new(store, log_guard, database)?;
             app.manage(app_state);
 
-            tracing::info!(version = env!("CARGO_PKG_VERSION"), "ArchImages started");
+            tracing::info!(version = env!("CARGO_PKG_VERSION"), "PhotoSort started");
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -58,5 +58,5 @@ pub fn run() {
             commands::geocode::test_geocode,
         ])
         .run(tauri::generate_context!())
-        .expect("failed to start ArchImages");
+        .expect("failed to start PhotoSort");
 }

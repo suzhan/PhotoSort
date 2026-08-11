@@ -1,7 +1,7 @@
 export default {
   app: {
-    title: "ArchImages",
-    subtitle: "Photo Archive · Organize · Dedupe",
+    title: "PhotoSort",
+    subtitle: "A cross-platform photo organizer powered by metadata",
   },
   language: {
     label: "Language",
@@ -55,7 +55,7 @@ export default {
     title: "Advanced settings",
     duplicateMode: "Duplicate detection",
     duplicateModern: "Modern (size + SHA-256)",
-    duplicateLegacy: "Legacy (size + MD5 + SHA-1)",
+    duplicateLegacy: "Strict (size + MD5 + SHA-1)",
     theme: "Theme",
     themeSystem: "System",
     themeLight: "Light",

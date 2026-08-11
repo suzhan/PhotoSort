@@ -1,6 +1,6 @@
 //! Integration tests using the imazen/codec-corpus dataset.
 //!
-//! These tests validate ArchImages' scanner and metadata pipeline against
+//! These tests validate PhotoSort's scanner and metadata pipeline against
 //! real-world codec conformance files — HEIC/HEIF/AVIF from libheif, Nokia,
 //! and dsoprea-exif; JPEG from real cameras (Canon, Nikon, Olympus, Sony);
 //! and TIFF conformance files including BigTIFF and edge cases.
