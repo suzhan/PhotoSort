@@ -109,16 +109,15 @@ jobs:
         with:
           workspaces: archimages/src-tauri
 
-      - name: Build Tauri app (Windows NSIS + MSI)
-        run: npm run tauri build -- --target x86_64-pc-windows-msvc
+      - name: Build Tauri app (Windows NSIS)
+        run: npm run tauri build -- --target x86_64-pc-windows-msvc --bundles nsis
 
-      - name: Upload Windows installers
+      - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
           name: PhotoSort-windows-x64
           path: |
             archimages/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
-            archimages/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
           if-no-files-found: warn
 
   build-macos:

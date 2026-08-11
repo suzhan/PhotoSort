@@ -209,7 +209,7 @@ npm run tauri build
 ```
 
 Produces platform-native bundles:
-- **Windows**: NSIS installer (`.exe`) and MSI (`.msi`)
+- **Windows**: NSIS installer (`.exe`)
 - **macOS**: `.app` bundle and `.dmg` (Apple Silicon + Intel)
 
 Current releases are **unsigned**. Code signing (Authenticode / Apple Developer ID) and notarization will be configured in a later release.
