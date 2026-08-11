@@ -115,7 +115,7 @@ jobs:
       - name: Upload Windows installers
         uses: actions/upload-artifact@v4
         with:
-          name: ArchImages-windows-x64
+          name: PhotoSort-windows-x64
           path: |
             archimages/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
             archimages/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
@@ -164,7 +164,7 @@ jobs:
       - name: Upload macOS bundles
         uses: actions/upload-artifact@v4
         with:
-          name: ArchImages-macos-${{ matrix.target }}
+          name: PhotoSort-macos-${{ matrix.target }}
           path: |
             archimages/src-tauri/target/${{ matrix.target }}/release/bundle/dmg/*.dmg
             archimages/src-tauri/target/${{ matrix.target }}/release/bundle/macos/*.app

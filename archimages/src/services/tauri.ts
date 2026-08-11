@@ -12,19 +12,26 @@ import type { TemplatePreview, TemplatePreviewRequest } from "../types/template"
  * 组件与 store 不直接调用 invoke / listen。
  */
 export async function ping(): Promise<string> {
+  if (!isTauriRuntime()) return "pong";
   return invoke<string>("ping");
 }
 
 export async function getSettings(): Promise<AppSettings> {
+  if (!isTauriRuntime()) return defaultBrowserSettings();
   return invoke<AppSettings>("get_settings");
 }
 
 export async function saveSettings(settings: AppSettings): Promise<void> {
+  if (!isTauriRuntime()) {
+    localStorage.setItem("photosort.settings", JSON.stringify(settings));
+    return;
+  }
   return invoke<void>("save_settings", { settings });
 }
 
 /** 弹出系统目录选择器；用户取消时返回 null。 */
 export async function pickDirectory(): Promise<string | null> {
+  if (!isTauriRuntime()) return null;
   const selected = await open({ directory: true, multiple: false });
   return typeof selected === "string" ? selected : null;
 }
@@ -64,6 +71,41 @@ export async function templatePreview(
 
 function isTauriRuntime(): boolean {
   return "__TAURI_INTERNALS__" in window || "__TAURI__" in window;
+}
+
+function defaultBrowserSettings(): AppSettings {
+  const stored = localStorage.getItem("photosort.settings");
+  if (stored) {
+    try {
+      return JSON.parse(stored) as AppSettings;
+    } catch {
+      localStorage.removeItem("photosort.settings");
+    }
+  }
+
+  return {
+    sourceDirectory: null,
+    destinationDirectory: null,
+    includeSubfolders: true,
+    operationMode: "copyVerifyDelete",
+    directoryTemplate: "{yyyy}/{camera_model}",
+    filenameTemplate: "{original_name}.{extension}",
+    duplicateMode: "modern",
+    gpsEnabled: false,
+    gpsPathLevel: "city",
+    gpsRoundPrecision: 4,
+    gpsNoApiMode: "unknownLocation",
+    metadataFallback: {
+      useModifiedTime: true,
+      unknownCamera: "UnknownCamera",
+      unknownLocation: "UnknownLocation",
+      unknownDate: "UnknownDate",
+    },
+    maxHashWorkers: 2,
+    maxCopyWorkers: 2,
+    theme: "system",
+    language: "zh-CN",
+  };
 }
 
 const sampleValues: Record<string, string> = {
@@ -138,6 +180,7 @@ export function onOrganizeProgress(
 
 /** 查询上次异常退出留下的未完成任务。 */
 export async function pendingRecoveryJobs(): Promise<PendingJobSummary[]> {
+  if (!isTauriRuntime()) return [];
   return invoke<PendingJobSummary[]>("pending_recovery_jobs");
 }
 
@@ -158,6 +201,7 @@ export async function clearGoogleApiKey(): Promise<void> {
 
 /** 查询是否已配置 API Key（不返回 Key 本身）。 */
 export async function hasGoogleApiKey(): Promise<boolean> {
+  if (!isTauriRuntime()) return false;
   return invoke<boolean>("has_google_api_key");
 }
 

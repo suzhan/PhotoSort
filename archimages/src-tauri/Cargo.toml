@@ -1,6 +1,6 @@
 [package]
 name = "archimages"
-version = "3.0.1-beta"
+version = "1.0.2-beta"
 description = "A cross-platform photo organizer powered by metadata"
 authors = ["suzhan"]
 edition = "2021"
