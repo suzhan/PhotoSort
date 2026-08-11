@@ -212,13 +212,19 @@ Produces platform-native bundles:
 - **Windows**: NSIS installer (`.exe`)
 - **macOS**: `.app` bundle and `.dmg` (Apple Silicon + Intel)
 
-Current releases are **unsigned**. Code signing (Authenticode / Apple Developer ID) and notarization will be configured in a later release.
+Current releases are **unsigned beta** builds. Code signing (Authenticode / Apple Developer ID) and notarization will be configured in a later release.
+
+On macOS, unsigned builds downloaded from a browser may show a "damaged" or "cannot be opened" warning. If you trust the downloaded release asset, remove the quarantine attribute before launching:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/PhotoSort.app
+```
 
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request:
 1. **Quality** (Ubuntu) — fmt, clippy, test, typecheck, frontend build
-2. **Build Windows** (x64) — NSIS + MSI artifacts
+2. **Build Windows** (x64) — NSIS `.exe` artifact
 3. **Build macOS** (Apple Silicon + Intel) — `.app` + `.dmg` artifacts
 
 ## Security Notes
