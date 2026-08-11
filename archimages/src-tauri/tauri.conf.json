@@ -30,8 +30,7 @@
     "windows": {
       "nsis": {
         "installMode": "perMachine",
-        "languages": ["English", "SimplifiedChinese"],
-        "displayLanguageSelector": true
+        "languages": ["English"]
       }
     },
     "macOS": {
