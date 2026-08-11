@@ -1,5 +1,7 @@
 # PhotoSort
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 A cross-platform photo organizer powered by metadata.
 
 **Design principle: data safety first, performance second.** Scanning and planning never write to disk. Source files are deleted only after all four guarantees pass: copy complete, target exists, size matches, hash matches. A full transaction journal enables crash recovery.
