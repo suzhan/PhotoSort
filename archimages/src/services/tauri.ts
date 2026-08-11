@@ -56,7 +56,64 @@ export function onScanItems(
 export async function templatePreview(
   request: TemplatePreviewRequest,
 ): Promise<TemplatePreview> {
+  if (!isTauriRuntime()) {
+    return localTemplatePreview(request);
+  }
   return invoke<TemplatePreview>("template_preview", { request });
+}
+
+function isTauriRuntime(): boolean {
+  return "__TAURI_INTERNALS__" in window || "__TAURI__" in window;
+}
+
+const sampleValues: Record<string, string> = {
+  yyyy: "2017",
+  MM: "11",
+  dd: "30",
+  yyyyMMdd: "20171130",
+  "yyyy-MM-dd": "2017-11-30",
+  HH: "15",
+  mm: "22",
+  ss: "31",
+  HHmmss: "152231",
+  camera_make: "NIKON CORPORATION",
+  camera_model: "NIKON D80",
+  lens_make: "NIKON",
+  lens_model: "18-135mm F3.5-5.6",
+  gps_country: "China",
+  gps_province: "UnknownLocation",
+  gps_city: "Hong Kong",
+  gps_district: "UnknownLocation",
+  original_name: "DSC_1231",
+  extension: "JPG",
+  seq: "1",
+  "seq:4": "0001",
+};
+
+function localTemplatePreview(request: TemplatePreviewRequest): TemplatePreview {
+  if (/\{seq(?::\d+)?\}/.test(request.directoryTemplate)) {
+    throw new Error("Sequence can only be used in filename templates");
+  }
+
+  const directoryComponents = renderLocalTemplate(request.directoryTemplate)
+    .split("/")
+    .filter(Boolean);
+  const filename = renderLocalTemplate(request.filenameTemplate);
+  return {
+    directoryComponents,
+    filename,
+    example: [...directoryComponents, filename].join("/"),
+  };
+}
+
+function renderLocalTemplate(template: string): string {
+  return template.replace(/\{([^}]+)\}/g, (_, key: string) => {
+    const value = sampleValues[key];
+    if (value === undefined) {
+      throw new Error(`Unknown template variable: ${key}`);
+    }
+    return value;
+  });
 }
 
 /**
